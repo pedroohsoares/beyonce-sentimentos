@@ -38,3 +38,9 @@ wordcloud - cria nuvem de palavras para saber quais palavras mais apareceram
 
         import nltk
         nltk.download('punkt')
+
+=================================
+# Rótulo	Quando acontece	O que significa na prática
+# positivo	Polaridade > 0.1	Letra com emoções boas, otimistas, de empoderamento, amor, superação
+# negativo	Polaridade < -0.1	Letra com tristeza, frustração, dor, raiva, crítica
+# neutro	Entre -0.1 e 0.1	Letra mais descritiva, reflexiva, ou com sentimentos mistos/ambíguos
