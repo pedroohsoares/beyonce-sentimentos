@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Beyoncé</title>
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Beyoncé</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<h1>Análise de Sentimentos - Discografia Beyoncé</h1>
+
+<div style="text-align: center; margin: 20px;">
+    <label for="albumFilter">Escolha um álbum:</label>
+    <select id="albumFilter" style="padding: 5px; font-size: 16px;">
+        <option value="todos">Todos os Álbuns</option>
+        <option value="renaissance">RENAISSANCE</option>
+        <option value="cowboy_carter">COWBOY CARTER</option>
+    </select>
+</div>
+<div class="chart-container">
+    <canvas id="sentimentPieChart"></canvas>
+</div>
+<canvas id="sentimentPieChart"></canvas>
+    </div>
+<script>
+    let allData = []; 
+    let sentimentChart; 
+
+    // Função para atualizar o gráfico com base no álbum escolhido
+    function updateChart(albumSelecionado) {
+        
+        // 1. FILTRAR OS DADOS
+        let dadosFiltrados;
+        if (albumSelecionado === 'todos') {
+            dadosFiltrados = allData; // Usa todos os dados
+        } else {
+            dadosFiltrados = allData.filter(musica => musica.album === albumSelecionado);
+        }
+
+        // 2. PROCESSAR OS DADOS (contar os sentimentos, igual antes)
+        const sentimentCounts = { positivo: 0, negativo: 0, neutro: 0 };
+        dadosFiltrados.forEach(musica => {
+            if (musica.sentimento === 'positivo') sentimentCounts.positivo++;
+            else if (musica.sentimento === 'negativo') sentimentCounts.negativo++;
+            else sentimentCounts.neutro++;
+        });
+
+        const chartData = [
+            sentimentCounts.positivo,
+            sentimentCounts.neutro,
+            sentimentCounts.negativo
+        ];
+
+        // 3. ATUALIZAR O GRÁFICO
+        // Se o gráfico ainda não foi criado, cria ele.
+        if (!sentimentChart) {
+            const ctx = document.getElementById('sentimentPieChart');
+            sentimentChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Positivo', 'Neutro', 'Negativo'],
+                    datasets: [{
+                        label: 'Distribuição de Sentimentos',
+                        data: chartData,
+                        backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(201, 203, 207, 0.7)', 'rgba(255, 99, 132, 0.7)'],
+                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(201, 203, 207, 1)', 'rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Distribuição de Sentimentos' }
+                    }
+                }
+            });
+        } else {
+            // Se o gráfico JÁ EXISTE, apenas atualiza os dados e o título.
+            sentimentChart.data.datasets[0].data = chartData;
+            sentimentChart.options.plugins.title.text = `Distribuição de Sentimentos - ${albumSelecionado.replace('_', ' ').toUpperCase()}`;
+            sentimentChart.update(); // Manda o Chart.js redesenhar com os novos dados
+        }
+    }
+
+    // --- PONTO DE INÍCIO ---
+    
+    // 1. Busca os dados da API
+    fetch('/api/dados-albuns')
+        .then(response => response.json())
+        .then(data => {
+            allData = data; // Guarda os dados
+            updateChart('todos'); // Desenha o gráfico inicial com "Todos os Álbuns"
+        })
+        .catch(error => console.error('Erro ao buscar dados:', error));
+
+    // 2. Adiciona um "ouvinte" para o evento de mudança no nosso filtro
+    document.getElementById('albumFilter').addEventListener('change', function() {
+        // Quando o usuário muda a seleção, chama a função para atualizar o gráfico
+        updateChart(this.value);
+    });
+</script>
+</body>
+</html>
