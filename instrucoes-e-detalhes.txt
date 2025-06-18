@@ -1,0 +1,40 @@
+
+PS C:\Users\ledun\Desktop\area de trabalho\updated_elcapitan_cursors_by_in_dolly_d9tjaf2\beyonce-sentimentos>
+
+1° criar o ambiente virtual
+python -m venv .venv
+
+2° ativar o ambiente virtual
+.venv\Scripts\activate
+
+3° instalar as bibliotecas 
+pip install pandas textblob scikit-learn matplotlib seaborn jupyter wordcloud
+
+pandas - vai manipular os dados em tabela (vai ser o nosso DataFrame)
+    DataFrame = tabela de dados (tipo planilha do excel) dentro do código para analisar de forma rápida e inteligente.
+
+textblob - analisa os sentimentos inicial (é uma ia que analisa as palavras, até reconhece intensidades, tipo "muito feliz" ou "muito triste")
+    - quebra a letra em palavras individuais.
+    - procura cada palavra no seu dicionário de "sentimentos".
+    - ignora palavras comuns que não têm sentimento (como "the", "is", "at").
+    - tira uma média das notas de polaridade de todas as palavras que encontrou. 
+    - o resultado dessa média é a polaridade final da música.
+
+scikit-learn - a caixa de ferramentas de machine learning (a ia de verdade)
+    - o modelo que aprendeu os padrões das letras (RandomForestClassifier) vem daqui
+    - usa também para criar a matriz de confusão e o relatório de classificação, que mediram a performance do modelo.
+
+matplotlib & seaborn - gráficos e visualizações
+    - usado para "desenhar" os gráficos e deixar a análise mais visual. 
+    - O matplotlib é a base para criar os gráficos, e o seaborn entra por cima pra deixar bonito (ele que desenhou o heatmap da matriz de confusão).
+
+jupyter - para abrir e executar os "notebook" (os com final .ipynb)
+    - mistura também código, com texto e gráfico para organização
+
+wordcloud - cria nuvem de palavras para saber quais palavras mais apareceram
+
+4° dentro de um script do python executa o recurso 'punkt' para o TextBlob
+    - ferramenta que o TextBlob usa para conseguir quebrar um texto em pedaços menores e mais fáceis de analisar.
+
+        import nltk
+        nltk.download('punkt')
